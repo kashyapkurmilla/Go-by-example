@@ -1,1 +1,2 @@
 # Go-by-example
+Welcome to the "Learn Go by Examples" repository! This repository is dedicated to providing beginners with a practical approach to learning Go programming through a collection of well-explained examples. Whether you're starting with the basics or diving into advanced topics, each example comes with clear explanations and code snippets to help you grasp essential concepts easily. Feel free to explore, experiment, and contribute to enhance this resource for fellow learners.
