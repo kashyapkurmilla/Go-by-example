@@ -4,14 +4,6 @@ import (
 	"fmt"
 )
 
-func main() {
-	fmt.Println("Data Structures")
-	arrays()
-	slices()
-	maps()
-	ranges()
-}
-
 func arrays() {
 	var arr [5]int
 	fmt.Println(arr)

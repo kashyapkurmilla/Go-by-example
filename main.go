@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
 	fmt.Println("Hello World !")
@@ -11,4 +13,11 @@ func main() {
 	fmt.Println(a)
 	fmt.Println(b)
 	switchs()
+
+	fmt.Println("Data Structures")
+	arrays()
+	slices()
+	maps()
+	ranges()
+
 }
