@@ -22,7 +22,11 @@
 
 package main
 
-import "sync"
+import (
+	"fmt"
+	"sync"
+	"time"
+)
 
 const NumPhilosophers = 5
 const NumMeals = 3
@@ -37,27 +41,60 @@ type philosopher struct {
 	eatCount                      int
 }
 
+func (p philosopher) eat(host chan bool, wg *sync.WaitGroup) {
+	defer wg.Done()
+
+	for p.eatCount < NumMeals {
+		select {
+		case <-host: //permission granted by the host
+			p.leftChopstick.Lock()
+			p.rightChopstick.Lock()
+
+			fmt.Printf("%d is Eating...\n", p.id)
+			time.Sleep(time.Millisecond * 1000) //let him eat
+			fmt.Printf("%d Finished eating\n", p.id)
+
+			p.leftChopstick.Unlock()
+			p.rightChopstick.Unlock()
+
+			p.eatCount++
+			host <- true
+
+		default:
+			time.Sleep(time.Millisecond * 10)
+		}
+	}
+}
+
 func main() {
-	host := make(chan bool,2)//two per session
+	host := make(chan bool, 2) //two per session
 	for i := 0; i < 2; i++ {
-		host<-true
+		host <- true
 	}
 
-	//creating chopsticks for each philosopher 
-	chopsticks := make([]*chopstick,NumPhilosophers)
+	//creating chopsticks for each philosopher
+	chopsticks := make([]*chopstick, NumPhilosophers)
 	for i := 0; i < NumPhilosophers; i++ {
-		chopsticks[i]=new(chopstick)
+		chopsticks[i] = new(chopstick)
 	}
 
-	philosophers := make([]*philosopher,NumPhilosophers)
+	philosophers := make([]*philosopher, NumPhilosophers)
+
 	var wg sync.WaitGroup
 
 	for i := 0; i < NumPhilosophers; i++ {
-		philosophers = &philosopher{
-			id : i+1,
-			leftChopstick: chopsticks[i],
-			rightChopstick: chopsticks[(i+1)%NumPhilosophers]
+		philosophers[i] = &philosopher{
+			id:             i + 1,
+			leftChopstick:  chopsticks[i],
+			rightChopstick: chopsticks[(i+1)%NumPhilosophers],
 		}
 	}
 
+	wg.Add(NumPhilosophers)
+
+	for _, p := range philosophers {
+		go p.eat(host, &wg)
+	}
+
+	wg.Wait()
 }
