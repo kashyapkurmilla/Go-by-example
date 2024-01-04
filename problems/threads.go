@@ -48,6 +48,7 @@ func main() {
 	var wg sync.WaitGroup
 	wg.Add(4)
 
+	//creates four go routines
 	for i := 0; i < 4; i++ {
 		go SortPartitions(arr, &wg, i)
 	}
